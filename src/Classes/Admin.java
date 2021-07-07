@@ -1,8 +1,14 @@
 package Classes;
 
-public class Admin {
+import java.io.Serial;
+import java.io.Serializable;
+
+public class Admin implements Serializable {
     private String username;
     private String password;
+
+    @Serial
+    private static final long serialVersionUID = 1;
 
     public Admin(String username, String password) {
         this.username = username;

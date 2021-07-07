@@ -1,13 +1,22 @@
 package Classes;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Bill {
+public class FinancialReport implements Serializable {
     private final LocalDate date;
     private long income = 0;
+    @Serial
+    private static final long serialVersionUID = 1;
 
-    public Bill(LocalDate date) {
+    public FinancialReport(LocalDate date) {
         this.date = date;
+    }
+
+    public FinancialReport(LocalDate date, long income) {
+        this.date = date;
+        this.income = income;
     }
 
     public long getIncome() {
@@ -15,7 +24,7 @@ public class Bill {
     }
 
     public void setIncome(long income) {
-        this.income = income;
+        this.income += income;
     }
 
     public LocalDate getDate() {
@@ -24,7 +33,7 @@ public class Bill {
 
     @Override
     public String toString() {
-        return "Bill{" +
+        return "FinancialReport{" +
                 "date=" + date +
                 ", income=" + income +
                 '}';
