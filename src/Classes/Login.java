@@ -9,8 +9,8 @@ public class Login {
 
     public static void login() {
         Scanner input = new Scanner(System.in);
-        boolean loggedin = false;
-        while (!loggedin) {
+        boolean loggedIn = false;
+        while (!loggedIn) {
             list = IOOperator.readAdmin("src/Files/Admins.txt");
             System.out.println("Hệ thống quản lý phòng net");
             System.out.println("Đăng nhập vào hệ thống");
@@ -19,12 +19,12 @@ public class Login {
             System.out.println("Password");
             String password = input.nextLine();
             if (username.equalsIgnoreCase("ADMIN") && password.equals("admin")) {
-                loggedin = true;
+                loggedIn = true;
                 AdminMenu.menu();
             } else {
                 for (Admin admin : list) {
                     if (admin.getUsername().equals(username) && admin.getPassword().equals(password)) {
-                        loggedin = true;
+                        loggedIn = true;
                         AdminMenu.menu();
                     }
                 }

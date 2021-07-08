@@ -44,32 +44,4 @@ public class AdminMenu {
             }
         }
     }
-
-    public static void managePCs() {
-        int choice = Integer.parseInt(input.nextLine());
-        switch (choice){
-
-        }
-    }
-
-    public static void manageService() {
-        int choice = Integer.parseInt(input.nextLine());
-        switch (choice){
-
-        }
-    }
-
-    public static void manageAccount() {
-        int choice = Integer.parseInt(input.nextLine());
-        switch (choice){
-
-        }
-    }
-
-    public static void manageIncome() {
-        int choice = Integer.parseInt(input.nextLine());
-        switch (choice){
-
-        }
-    }
 }
