@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 public class Login {
     private static List<Admin> list = new ArrayList<>();
+    private static final String admin = "admin";
 
     public static void login() {
         Scanner input = new Scanner(System.in);
@@ -18,7 +19,7 @@ public class Login {
             String username = input.nextLine();
             System.out.println("Password");
             String password = input.nextLine();
-            if (username.equalsIgnoreCase("ADMIN") && password.equals("admin")) {
+            if (username.equalsIgnoreCase(admin) && password.equals(admin)) {
                 loggedIn = true;
                 AdminMenu.menu();
             } else {

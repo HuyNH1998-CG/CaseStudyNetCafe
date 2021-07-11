@@ -11,6 +11,14 @@ public class Management {
     private static List<Service> serviceList = new ArrayList<>();
     private static List<FinancialReport> financialReport = new ArrayList<>();
     static Scanner input = new Scanner(System.in);
+    private static final int CPU = 1;
+    private static final int GPU = 2;
+    private static final int RAM = 3;
+    private static final int HDD = 4;
+    private static final int ALL = 5;
+    private static final int yes = 1;
+    private static final int spec = 1;
+    private static final int status = 2;
 
     public static List<FinancialReport> getFinancialReport() {
         return financialReport;
@@ -69,7 +77,7 @@ public class Management {
         System.out.println("1. Có");
         System.out.println("2. Không");
         int choice = Integer.parseInt(input.nextLine());
-        if (choice == 1) {
+        if (choice == yes) {
             showDetail2();
         }
     }
@@ -79,8 +87,8 @@ public class Management {
         System.out.println("2. Xem tình trạng");
         int choice2 = Integer.parseInt(input.nextLine());
         switch (choice2) {
-            case 1 -> showPCSpec();
-            case 2 -> showPCStatus();
+            case spec -> showPCSpec();
+            case status -> showPCStatus();
         }
     }
 
@@ -128,11 +136,11 @@ public class Management {
             System.out.println("5. Toàn bộ máy");
             int choice = Integer.parseInt(input.nextLine());
             switch (choice) {
-                case 1 -> pcList.get(index - 1).setCPU(getHardware("Nhập CPU bạn đã lắp"));
-                case 2 -> pcList.get(index - 1).setGPU(getHardware("Nhập card màn hình bạn đã lắp"));
-                case 3 -> pcList.get(index - 1).setRAM(getHardware("Nhập RAM bạn đã lắp"));
-                case 4 -> pcList.get(index - 1).setHDD(getHardware("Nhập ổ cứng bạn đã lắp"));
-                case 5 -> pcList.set(index - 1, makeNewPC());
+                case CPU -> pcList.get(index - 1).setCPU(getHardware("Nhập CPU bạn đã lắp"));
+                case GPU -> pcList.get(index - 1).setGPU(getHardware("Nhập card màn hình bạn đã lắp"));
+                case RAM -> pcList.get(index - 1).setRAM(getHardware("Nhập RAM bạn đã lắp"));
+                case HDD -> pcList.get(index - 1).setHDD(getHardware("Nhập ổ cứng bạn đã lắp"));
+                case ALL -> pcList.set(index - 1, makeNewPC());
             }
             System.out.println("Nâng cấp xong");
             IOOperator.writePCFile("src/Files/PC.txt", pcList);
