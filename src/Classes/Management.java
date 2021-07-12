@@ -378,6 +378,9 @@ public class Management {
         if (username.equalsIgnoreCase(admin)) {
             return null;
         }
+        if(username.equalsIgnoreCase(cancel) || password.equalsIgnoreCase(cancel)){
+            return null;
+        }
         return new Admin(username, password);
     }
 
