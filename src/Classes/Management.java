@@ -72,12 +72,10 @@ public class Management {
         }
     }
 
-    private static boolean errNoPC() {
+    private static void errNoPC() {
         if (pcList.isEmpty()) {
             pcList = IOOperator.readPC("src/Files/PC.txt");
-            return true;
         }
-        return false;
     }
 
     private static void showAll() {
@@ -140,7 +138,7 @@ public class Management {
 
     public static void sellPC() {
         try {
-            if (errNoPC()) return;
+            errNoPC();
             if (!Login.getUser().getUsername().equalsIgnoreCase(admin)) {
                 System.out.println("Không bán được máy vì không phải chủ quán");
                 return;
@@ -158,7 +156,7 @@ public class Management {
 
     public static void upgradePC() {
         try {
-            if (errNoPC()) return;
+            errNoPC();
             showAll();
             System.out.println("Nhập số của máy cần nâng cấp");
             int index = Integer.parseInt(input.nextLine());
@@ -185,7 +183,7 @@ public class Management {
 
     public static void startPC() {
         try {
-            if (errNoPC()) return;
+            errNoPC();
             showAll();
             System.out.println("Nhập số của máy cần bật");
             int index = Integer.parseInt(input.nextLine());
@@ -198,7 +196,7 @@ public class Management {
 
     public static void checkOut() {
         try {
-            if (errNoPC()) return;
+            errNoPC();
             showAll();
             System.out.println("Nhập số của máy cần tính tiền");
             int index = Integer.parseInt(input.nextLine());
@@ -294,16 +292,15 @@ public class Management {
 
     public static void addService() {
         try {
-            serviceList = IOOperator.readService("src/Files/Service.txt");
-            if (errNoPC()) return;
+            errNoPC();
             showAll();
-            showAllServices();
             System.out.println("Nhập số của máy gọi dịch vụ");
             int index = Integer.parseInt(input.nextLine());
             if (!pcList.get(index - 1).isOnline()) {
                 System.out.println("Máy chưa được mở");
                 return;
             }
+            showAllServices();
             System.out.println("Nhập dịch vụ (số thứ tự)");
             int index2 = Integer.parseInt(input.nextLine());
             pcList.get(index - 1).getServices().add(serviceList.get(index2 - 1));
@@ -313,6 +310,11 @@ public class Management {
     }
 
     private static void showAllServices() {
+        serviceList = IOOperator.readService("src/Files/Service.txt");
+        if(serviceList.isEmpty()){
+            System.out.println("Không có dịch vụ");
+            return;
+        }
         for (int i = 0; i < serviceList.size(); i++) {
             System.out.println("Số " + (i + 1) + " " + serviceList.get(i));
         }
@@ -320,7 +322,6 @@ public class Management {
 
     public static void removeService() {
         try {
-            serviceList = IOOperator.readService("src/Files/Service.txt");
             showAllServices();
             System.out.println("Nhập số của dịch vụ cần xóa");
             int index = Integer.parseInt(input.nextLine());
@@ -333,7 +334,6 @@ public class Management {
 
     public static void editService() {
         try {
-            serviceList = IOOperator.readService("src/Files/Service.txt");
             showAllServices();
             System.out.println("Nhập số của dịch vụ cần sửa");
             int index = Integer.parseInt(input.nextLine());
@@ -373,10 +373,7 @@ public class Management {
 
     public static void removeAdmin() {
         try {
-            Login.setList(IOOperator.readAdmin("src/Files/Admins.txt"));
-            for (int i = 0; i < Login.getList().size(); i++) {
-                System.out.println("Số " + i + 1 + " " + Login.getList().get(i).getUsername());
-            }
+            printAccountList();
             System.out.println("Nhập số của tài khoản cần xóa");
             int index = Integer.parseInt(input.nextLine());
             Login.getList().remove(index - 1);
@@ -386,12 +383,16 @@ public class Management {
         }
     }
 
+    private static void printAccountList() {
+        Login.setList(IOOperator.readAdmin("src/Files/Admins.txt"));
+        for (int i = 0; i < Login.getList().size(); i++) {
+            System.out.println("Số " + i + 1 + " " + Login.getList().get(i).getUsername());
+        }
+    }
+
     public static void editAdmin() {
         try {
-            Login.setList(IOOperator.readAdmin("src/Files/Admins.txt"));
-            for (int i = 0; i < Login.getList().size(); i++) {
-                System.out.println("Số " + (i + 1) + " " + Login.getList().get(i).getUsername());
-            }
+            printAccountList();
             System.out.println("Nhập số của tài khoản cần sửa");
             int index = Integer.parseInt(input.nextLine());
             Login.getList().set(index - 1, createAdmin());
