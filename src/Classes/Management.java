@@ -19,6 +19,8 @@ public class Management {
     private static final int yes = 1;
     private static final int spec = 1;
     private static final int status = 2;
+    private static final String admin = "admin";
+    private static final String cancel = "cancel";
 
     public static List<FinancialReport> getFinancialReport() {
         return financialReport;
@@ -27,6 +29,10 @@ public class Management {
     public static void addPC() {
         try {
             PC pc = makeNewPC();
+            if (pc == null) {
+                System.out.println("Mua thiếu linh kiện hoặc chủ quán không muốn thêm máy nữa");
+                return;
+            }
             pcList = IOOperator.readPC("src/Files/PC.txt");
             pcList.add(pc);
             IOOperator.writePCFile("src/Files/PC.txt", pcList);
@@ -40,12 +46,20 @@ public class Management {
         String GPU = getHardware("Nhập card màn hình bạn đã lắp");
         String RAM = getHardware("Nhập RAM bạn đã lắp");
         String HDD = getHardware("Nhập ổ cứng bạn đã lắp");
+        if (CPU.equals(cancel) || GPU.equals(cancel) || RAM.equals(cancel) || HDD.equals(cancel)) {
+            return null;
+        }
         return new PC(CPU, GPU, RAM, HDD);
     }
 
+
     private static String getHardware(String s) {
         System.out.println(s);
-        return input.nextLine();
+        String hardware = input.nextLine();
+        if(hardware.matches("^\\w+")){
+            return hardware;
+        }
+        return cancel;
     }
 
     public static void showAllPC() {
@@ -73,44 +87,64 @@ public class Management {
     }
 
     private static void showDetail() {
-        System.out.println("Bạn có muốn xem chi tiết máy không?");
-        System.out.println("1. Có");
-        System.out.println("2. Không");
-        int choice = Integer.parseInt(input.nextLine());
-        if (choice == yes) {
-            showDetail2();
+        try {
+            System.out.println("Bạn có muốn xem chi tiết máy không?");
+            System.out.println("1. Có");
+            System.out.println("2. Không");
+            int choice = Integer.parseInt(input.nextLine());
+            if (choice == yes) {
+                showDetail2();
+            }
+        } catch (Exception e) {
+            System.out.println("Quay lại màn hình chính...");
         }
     }
 
     private static void showDetail2() {
-        System.out.println("1. Xem cấu hình máy");
-        System.out.println("2. Xem tình trạng");
-        int choice2 = Integer.parseInt(input.nextLine());
-        switch (choice2) {
-            case spec -> showPCSpec();
-            case status -> showPCStatus();
+        try {
+            System.out.println("1. Xem cấu hình máy");
+            System.out.println("2. Xem tình trạng");
+            int choice2 = Integer.parseInt(input.nextLine());
+            switch (choice2) {
+                case spec -> showPCSpec();
+                case status -> showPCStatus();
+            }
+        } catch (Exception e) {
+            System.out.println("Quay lại màn hình chính...");
         }
     }
 
     private static void showPCStatus() {
-        System.out.println("Nhập số của máy");
-        int index = Integer.parseInt(input.nextLine());
-        if (pcList.get(index - 1).isOnline()) {
-            System.out.println(pcList.get(index - 1).displayOnline());
-        } else {
-            System.out.println(pcList.get(index - 1).isPCOnline());
+        try {
+            System.out.println("Nhập số của máy");
+            int index = Integer.parseInt(input.nextLine());
+            if (pcList.get(index - 1).isOnline()) {
+                System.out.println(pcList.get(index - 1).displayOnline());
+            } else {
+                System.out.println(pcList.get(index - 1).isPCOnline());
+            }
+        } catch (Exception e) {
+            System.out.println("Không tìm thấy máy");
         }
     }
 
     private static void showPCSpec() {
-        System.out.println("Nhập số của máy");
-        int index = Integer.parseInt(input.nextLine());
-        System.out.println(pcList.get(index - 1).displaySpec());
+        try {
+            System.out.println("Nhập số của máy");
+            int index = Integer.parseInt(input.nextLine());
+            System.out.println(pcList.get(index - 1).displaySpec());
+        } catch (Exception e) {
+            System.out.println("Không tìm thấy máy");
+        }
     }
 
     public static void sellPC() {
         try {
             if (errNoPC()) return;
+            if (!Login.getUser().getUsername().equalsIgnoreCase(admin)) {
+                System.out.println("Không bán được máy vì không phải chủ quán");
+                return;
+            }
             showAll();
             System.out.println("Nhập số của máy cần bán");
             int index = Integer.parseInt(input.nextLine());
@@ -118,7 +152,7 @@ public class Management {
             System.out.println("Đã bán máy");
             IOOperator.writePCFile("src/Files/PC.txt", pcList);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Không tìm thấy máy cần bán");
         }
     }
 
@@ -145,7 +179,7 @@ public class Management {
             System.out.println("Nâng cấp xong");
             IOOperator.writePCFile("src/Files/PC.txt", pcList);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Nâng cấp không thành công");
         }
     }
 
@@ -158,7 +192,7 @@ public class Management {
             pcList.get(index - 1).start();
             System.out.println("Máy đã được bật");
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Không bật được máy");
         }
     }
 
@@ -170,7 +204,8 @@ public class Management {
             int index = Integer.parseInt(input.nextLine());
             pcList.get(index - 1).stop();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Không tính tiền nữa");
+            System.out.println("Quay lại màn hình chính....");
         }
     }
 
@@ -222,14 +257,18 @@ public class Management {
             }
         } catch (Exception e) {
             System.out.println("Có lỗi xảy ra");
-            System.out.println("Hãy đảm bảo nhập đúng như ví dụ sau: " + LocalDate.now());
+            System.out.println("Hãy đảm bảo nhập ngày tháng đúng như ví dụ sau: " + LocalDate.now());
         }
     }
 
     public static void addNewService() {
         try {
             serviceList = IOOperator.readService("src/Files/Service.txt");
-            serviceList.add(createService());
+            Service temp = createService();
+            if (temp == null) {
+                return;
+            }
+            serviceList.add(temp);
             IOOperator.writeServiceFile("src/Files/Service.txt", serviceList);
         } catch (Exception e) {
             e.printStackTrace();
@@ -237,11 +276,20 @@ public class Management {
     }
 
     private static Service createService() {
-        System.out.println("Nhập tên dịch vụ");
-        String name = input.nextLine();
-        System.out.println("Nhập giá tiền của dịch vụ");
-        long price = Long.parseLong(input.nextLine());
-        return new Service(name, price);
+        try {
+            System.out.println("Nhập tên dịch vụ");
+            String name = input.nextLine();
+            if (name.equals(cancel)) {
+                System.out.println("Hủy quá trình thêm dịch vụ");
+                return null;
+            }
+            System.out.println("Nhập giá tiền của dịch vụ");
+            long price = Long.parseLong(input.nextLine());
+            return new Service(name, price);
+        } catch (Exception e) {
+            System.out.println("Hủy quá trình thêm dịch vụ");
+        }
+        return null;
     }
 
     public static void addService() {
@@ -258,9 +306,9 @@ public class Management {
             }
             System.out.println("Nhập dịch vụ (số thứ tự)");
             int index2 = Integer.parseInt(input.nextLine());
-            pcList.get(index - 1).getServices().add(serviceList.get(index2-1));
+            pcList.get(index - 1).getServices().add(serviceList.get(index2 - 1));
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Hủy order dịch vụ");
         }
     }
 
@@ -279,7 +327,7 @@ public class Management {
             serviceList.remove(index - 1);
             IOOperator.writeServiceFile("src/Files/Service.txt", serviceList);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Hủy quá trình thêm dịch vụ");
         }
     }
 
@@ -292,14 +340,19 @@ public class Management {
             serviceList.set(index - 1, createService());
             IOOperator.writeServiceFile("src/Files/Service.txt", serviceList);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Hủy quá trình sửa dịch vụ");
         }
     }
 
     public static void addNewAdmin() {
         try {
             Login.setList(IOOperator.readAdmin("src/Files/Admins.txt"));
-            Login.getList().add(createAdmin());
+            Admin temp = createAdmin();
+            if (temp == null) {
+                System.out.println("Tạo người dùng thất bại");
+                return;
+            }
+            Login.getList().add(temp);
             IOOperator.writeAdminFile("src/Files/Admins.txt", Login.getList());
         } catch (Exception e) {
             e.printStackTrace();
@@ -312,6 +365,9 @@ public class Management {
         String username = input.nextLine();
         System.out.println("Nhập mật khẩu");
         String password = input.nextLine();
+        if (username.equalsIgnoreCase(admin)) {
+            return null;
+        }
         return new Admin(username, password);
     }
 
@@ -326,7 +382,7 @@ public class Management {
             Login.getList().remove(index - 1);
             IOOperator.writeAdminFile("src/Files/Admins.txt", Login.getList());
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Hủy quá trình xóa tài khoản");
         }
     }
 
@@ -341,7 +397,7 @@ public class Management {
             Login.getList().set(index - 1, createAdmin());
             IOOperator.writeAdminFile("src/Files/Admins.txt", Login.getList());
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Hủy quá trình sửa tài khoản");
         }
     }
 }

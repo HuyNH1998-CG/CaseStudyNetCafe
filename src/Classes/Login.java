@@ -7,6 +7,7 @@ import java.util.Scanner;
 public class Login {
     private static List<Admin> list = new ArrayList<>();
     private static final String admin = "admin";
+    private static Admin user;
 
     public static void login() {
         Scanner input = new Scanner(System.in);
@@ -20,11 +21,13 @@ public class Login {
             System.out.println("Password");
             String password = input.nextLine();
             if (username.equalsIgnoreCase(admin) && password.equals(admin)) {
+                user = new Admin(admin, admin);
                 loggedIn = true;
                 AdminMenu.menu();
             } else {
                 for (Admin admin : list) {
                     if (admin.getUsername().equals(username) && admin.getPassword().equals(password)) {
+                        user = admin;
                         loggedIn = true;
                         AdminMenu.menu();
                     }
@@ -32,6 +35,10 @@ public class Login {
                 System.out.println("Nhập sai username hoặc password");
             }
         }
+    }
+
+    public static Admin getUser() {
+        return user;
     }
 
     public static List<Admin> getList() {
