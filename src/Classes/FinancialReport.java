@@ -33,9 +33,6 @@ public class FinancialReport implements Serializable {
 
     @Override
     public String toString() {
-        return "FinancialReport{" +
-                "date=" + date +
-                ", income=" + income +
-                '}';
+        return "Ngày : " + date + ", Doanh thu: " + income;
     }
 }

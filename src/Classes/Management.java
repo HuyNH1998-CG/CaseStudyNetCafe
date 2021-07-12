@@ -209,7 +209,7 @@ public class Management {
 
     public static void getFinancialRP(long total) {
         try {
-            IOOperator.readIncome("src/Files/Income.txt");
+            readIncomeFile();
             if (financialReport.isEmpty()) {
                 Management.getFinancialReport().add(new FinancialReport(LocalDate.now(), total));
             } else {
@@ -227,9 +227,13 @@ public class Management {
         }
     }
 
+    private static void readIncomeFile() {
+        financialReport = IOOperator.readIncome("src/Files/Income.txt");
+    }
+
     public static void showFinancialRP() {
         try {
-            IOOperator.readIncome("src/Files/Income.txt");
+            readIncomeFile();
             for (FinancialReport financialReport : financialReport) {
                 System.out.println(financialReport);
             }
@@ -240,7 +244,7 @@ public class Management {
 
     public static void showFinancialRPInPeriod() {
         try {
-            IOOperator.readIncome("src/Files/Income.txt");
+            readIncomeFile();
             System.out.println("Nhập ngày bắt đầu (năm-tháng-ngày)");
             String start = input.nextLine();
             System.out.println("Nhập ngày kết thúc (năm-tháng-ngày)");
@@ -250,6 +254,8 @@ public class Management {
             LocalDate endDate = LocalDate.parse(end, formatter);
             for (FinancialReport financialReport : financialReport) {
                 if (financialReport.getDate().isAfter(startDate) && financialReport.getDate().isBefore(endDate)) {
+                    System.out.println(financialReport);
+                }else if (financialReport.getDate().isEqual(startDate) || financialReport.getDate().isEqual(endDate)){
                     System.out.println(financialReport);
                 }
             }
@@ -346,6 +352,10 @@ public class Management {
 
     public static void addNewAdmin() {
         try {
+            if (!Login.getUser().getUsername().equalsIgnoreCase(admin)) {
+                System.out.println("Không phải chủ quán, không thể thêm tài khoản quản trị");
+                return;
+            }
             Login.setList(IOOperator.readAdmin("src/Files/Admins.txt"));
             Admin temp = createAdmin();
             if (temp == null) {
@@ -373,6 +383,10 @@ public class Management {
 
     public static void removeAdmin() {
         try {
+            if (!Login.getUser().getUsername().equalsIgnoreCase(admin)) {
+                System.out.println("Không phải chủ quán, không thể xóa tài khoản quản trị");
+                return;
+            }
             printAccountList();
             System.out.println("Nhập số của tài khoản cần xóa");
             int index = Integer.parseInt(input.nextLine());
@@ -392,6 +406,10 @@ public class Management {
 
     public static void editAdmin() {
         try {
+            if (!Login.getUser().getUsername().equalsIgnoreCase(admin)) {
+                System.out.println("Không phải chủ quán, không thể sửa tài khoản quản trị");
+                return;
+            }
             printAccountList();
             System.out.println("Nhập số của tài khoản cần sửa");
             int index = Integer.parseInt(input.nextLine());
